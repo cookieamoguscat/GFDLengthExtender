@@ -89,31 +89,46 @@ GFDLengthExtender.begin = () => {
     GFDLengthExtender.minGFDtime = 1;
     GFDLengthExtender.maxGFDtime = 25;
 
+    CCSE.customSave.push(function () {
+        CCSE.config.OtherMods.GFDLengthExtender = GFDLengthExtender.GFDLENGTH;
+    });
+    CCSE.customLoad.push(function () {
+        if (CCSE.config.OtherMods.GFDLengthExtender) {
+            GFDLengthExtender.GFDLENGTH =
+                CCSE.config.OtherMods.GFDLengthExtender;
+            this.onSliderInput(GFDLengthExtender.GFDLENGTH);
+        } else {
+            GFDLengthExtender.GFDLENGTH = 1;
+        }
+    });
+
     GFDLengthExtender.onSliderChange = (v) => {
         document.getElementById("gfdSeconds").textContent = v;
         GFDLengthExtender.GFDLENGTH = v;
     };
-
     GFDLengthExtender.onSliderInput = (v) => {
         document.getElementById("gfdSeconds").textContent = v;
     };
 
     GFDLengthExtender.menuFunction = () => {
-        return CCSE.AppendOptionsMenu(`<div class="listing">
-    <div class="sliderBox">
-        <div style="float:left;" class="smallFancyButton">How many seconds GFD should take to cast (in seconds)</div>
-        <div style="float:right;" class="smallFancyButton" id="gfdSeconds">
-            ${GFDLengthExtender.GFDLENGTH}
-        </div>
-        <input class="slider" id="gfdSecondsSlider"
-               style="clear:both;"
-               type="range" min="${GFDLengthExtender.minGFDtime}" max="${GFDLengthExtender.maxGFDtime}" step="1"
-               value="${GFDLengthExtender.GFDLENGTH}"
-               onchange="GFDLengthExtender.onSliderChange(this.value)"
-               oninput="GFDLengthExtender.onSliderInput(this.value)"
-               onmouseup="PlaySound('snd/tick.mp3');">
-    </div></div>`);
+        return CCSE.AppendOptionsMenu(`
+        <div class="listing">
+            <div class="sliderBox">
+                <div style="float:left;" class="smallFancyButton">How many seconds GFD should take to cast (in seconds)</div>
+                <div style="float:right;" class="smallFancyButton" id="gfdSeconds">
+                    ${GFDLengthExtender.GFDLENGTH}
+                </div>
+                <input class="slider" id="gfdSecondsSlider"
+                    style="clear:both;"
+                    type="range" min="${GFDLengthExtender.minGFDtime}" max="${GFDLengthExtender.maxGFDtime}" step="1"
+                    value="${GFDLengthExtender.GFDLENGTH}"
+                    onchange="GFDLengthExtender.onSliderChange(this.value)"
+                    oninput="GFDLengthExtender.onSliderInput(this.value)"
+                    onmouseup="PlaySound('snd/tick.mp3');">
+            </div>
+        </div>`);
     };
+
     Game.customOptionsMenu.push(GFDLengthExtender.menuFunction);
     GFDLengthExtender.isLoaded = 1;
 };
