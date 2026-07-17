@@ -1,3 +1,4 @@
+//thx staticvariablejames
 Game.Win("Cheated cookies taste awful");
 Game.Win("Third-party");
 if (GFDLengthExtender === undefined) var GFDLengthExtender = {};
@@ -89,6 +90,33 @@ GFDLengthExtender.begin = () => {
     GFDLengthExtender.minGFDtime = 1;
     GFDLengthExtender.maxGFDtime = 25;
 
+    GFDLengthExtender.serializeSaves = () => {
+        let saveData = { GFDLENGTH: GFDLengthExtender.GFDLENGTH };
+        return JSON.stringify(saveData);
+    };
+    GFDLengthExtender.loadSaves = (saveData) => {
+        let saveDataAsObject = JSON.parse(saveData);
+        if (!saveDataAsObject || typeof saveDataAsObject != "object") {
+            console.warn("Unknown save format.");
+            //default?
+            return;
+        }
+
+        if (!("GFDLENGTH" in saveDataAsObject)) {
+            console.log("No predefined GFDLENGTH");
+        } else {
+            console.log(Game.modSaveData.GFDLengthExtender);
+        }
+        let version = void 0;
+    };
+    // GFDLengthExtender.save = () => {
+    //     return GFDLengthExtender.serializeSaves()
+    // }
+    GFDLengthExtender.load = (str) => {
+        GFDLengthExtender.GFDLENGTH = CCSE.config.OtherMods.GFDLengthExtender;
+    };
+
+    // RANDOM CCSE BS
     CCSE.customSave.push(function () {
         CCSE.config.OtherMods.GFDLengthExtender = GFDLengthExtender.GFDLENGTH;
     });
@@ -96,7 +124,7 @@ GFDLengthExtender.begin = () => {
         if (CCSE.config.OtherMods.GFDLengthExtender) {
             GFDLengthExtender.GFDLENGTH =
                 CCSE.config.OtherMods.GFDLengthExtender;
-            this.onSliderInput(GFDLengthExtender.GFDLENGTH);
+            // GFDLengthExtender.onSliderInput(GFDLengthExtender.GFDLENGTH);
         } else {
             GFDLengthExtender.GFDLENGTH = 1;
         }
@@ -112,21 +140,22 @@ GFDLengthExtender.begin = () => {
 
     GFDLengthExtender.menuFunction = () => {
         return CCSE.AppendOptionsMenu(`
-        <div class="listing">
-            <div class="sliderBox">
-                <div style="float:left;" class="smallFancyButton">How many seconds GFD should take to cast (in seconds)</div>
-                <div style="float:right;" class="smallFancyButton" id="gfdSeconds">
-                    ${GFDLengthExtender.GFDLENGTH}
+            <div class="title">GFD length extender</div>
+            <div class="listing">
+                <div class="sliderBox">
+                    <div style="float:left;" class="smallFancyButton">How many seconds GFD should take to cast (in seconds)</div>
+                    <div style="float:right;" class="smallFancyButton" id="gfdSeconds">
+                        ${GFDLengthExtender.GFDLENGTH}
+                    </div>
+                    <input class="slider" id="gfdSecondsSlider"
+                        style="clear:both;"
+                        type="range" min="${GFDLengthExtender.minGFDtime}" max="${GFDLengthExtender.maxGFDtime}" step="1"
+                        value="${GFDLengthExtender.GFDLENGTH}"
+                        onchange="GFDLengthExtender.onSliderChange(this.value)"
+                        oninput="GFDLengthExtender.onSliderInput(this.value)"
+                        onmouseup="PlaySound('snd/tick.mp3');">
                 </div>
-                <input class="slider" id="gfdSecondsSlider"
-                    style="clear:both;"
-                    type="range" min="${GFDLengthExtender.minGFDtime}" max="${GFDLengthExtender.maxGFDtime}" step="1"
-                    value="${GFDLengthExtender.GFDLENGTH}"
-                    onchange="GFDLengthExtender.onSliderChange(this.value)"
-                    oninput="GFDLengthExtender.onSliderInput(this.value)"
-                    onmouseup="PlaySound('snd/tick.mp3');">
-            </div>
-        </div>`);
+            </div>`);
     };
 
     Game.customOptionsMenu.push(GFDLengthExtender.menuFunction);
@@ -142,4 +171,3 @@ if (!GFDLengthExtender.isLoaded) {
         CCSE.postLoadHooks.push(GFDLengthExtender.begin);
     }
 }
-//
